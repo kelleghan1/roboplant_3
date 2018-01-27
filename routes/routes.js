@@ -130,6 +130,7 @@ router.get("/get_client/:clientId", function(req, res){
 
 router.get("/get_module/:moduleId", function(req, res){
 
+  console.log('$$$$TEST');
   var moduleId = parseInt(req.params.moduleId);
   var moduleObj = {};
 
@@ -139,8 +140,6 @@ router.get("/get_module/:moduleId", function(req, res){
   .then(function(temperatureResult){
 
     moduleObj.temperatureReadings = temperatureResult.reverse();
-
-    console.log('TEMP', temperatureResult.reverse());
 
     knex('humidity_readings').where({module_id: moduleId}).orderBy('time', 'desc').limit(150)
     .then(function(humidityResult){
@@ -235,8 +234,6 @@ router.post('/delete_module', function(req, res, next) {
 
 router.post('/create_worker', function(req, res, next) {
 
-  console.log(req.body);
-
   var clientId = parseInt(req.body.clientId);
   var workerName = req.body.workerName;
 
@@ -250,7 +247,6 @@ router.post('/create_worker', function(req, res, next) {
 
 router.post('/update_worker', function(req, res, next) {
 
-  console.log(req.body);
   var workerId = req.body.worker_id;
   var workerActive = req.body.active;
 
@@ -261,7 +257,6 @@ router.post('/update_worker', function(req, res, next) {
   })
 
 });
-
 
 
 router.post("/post_data/:data", function(req, res){
@@ -280,13 +275,13 @@ router.post("/post_data/:data", function(req, res){
         .then(function(res){
 
           var io = req.app.get('socketio');
-          io.emit('humidity', { clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, humidity: parseFloat(sensorRequest.hum1) + ''});
+          io.emit('humidity', { clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, humidity: parseFloat(sensorRequest.hum1) + '', time: date});
 
           knex('temperature_readings').insert({module_id: moduleResult[0].module_id, temperature_reading: parseFloat(sensorRequest.temp1), sensor_id: sensorRequest.sensorid, time: date})
           .then(function(res1){
 
             var io = req.app.get('socketio');
-            io.emit('temperature', {clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, temperature: parseFloat(sensorRequest.temp1) + ''});
+            io.emit('temperature', {clientId: moduleResult[0].client_id, moduleId: moduleResult[0].module_id, temperature: parseFloat(sensorRequest.temp1) + '', time: date});
 
             return;
 

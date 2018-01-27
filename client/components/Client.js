@@ -19,13 +19,14 @@ class Client extends React.Component {
     this.submitModule = this.submitModule.bind(this);
     this.updateModule = this.updateModule.bind(this);
     this.renderWorkers = this.renderWorkers.bind(this);
+    this.clientId = this.props.match.params.clientId;
   }
 
   componentDidMount() {
-    axios.get('/get_client/' + this.props.match.params.clientId)
+    axios.get('/get_client/' + this.clientId)
     .then(res => {
       this.setState(res);
-      this.setState({loading: false});
+      this.setState({loading: false}, () => {console.log(this.state)});
     })
   }
 

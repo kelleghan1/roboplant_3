@@ -5,18 +5,93 @@ import axios from 'axios';
 import Popup from 'react-popup';
 import Loading from './Loading';
 import MyChart from './MyChart';
-import ReactHighcharts from 'react-highcharts';
-// import { withHighcharts, HighchartsChart, Chart } from 'react-jsx-highcharts';
-// import Highcharts from 'highcharts';
+import openSocket from 'socket.io-client';
+import Moment from 'moment';
 
 class ModuleGraph extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {moduleId: this.props.match.params.moduleId};
+    this.state = {
+      moduleId: this.props.match.params.moduleId,
+      tempData:{
+        labels: [],
+        datasets:[
+          {
+            label:'Temperature (C)',
+            data:[],
+            backgroundColor: 'rgba(115, 167, 66, 0.2)',
+            borderColor: 'rgba(115, 167, 66, 1)'
+          }
+        ]
+      },
+      humData:{
+        labels: [],
+        datasets:[
+          {
+            label:'Humidity (%)',
+            data:[],
+            backgroundColor: 'rgba(115, 167, 66, 0.2)',
+            borderColor: 'rgba(115, 167, 66, 1)'
+          }
+        ]
+      },
+      weightData:{
+        labels: [],
+        datasets:[
+          {
+            label:'Weight (Kg)',
+            data:[],
+            backgroundColor: 'rgba(115, 167, 66, 0.2)',
+            borderColor: 'rgba(115, 167, 66, 1)'
+          }
+        ]
+      }
+    }
   }
 
   componentDidMount() {
+    console.log('STATE', this.state);
+    const socket = openSocket('http://localhost:4200');
+    socket.off('temperature');
+    socket.off('humidity');
+    socket.off('weight');
+    socket.on('temperature', data => {
+      this.setState({recentTemp: data.temperature});
+    })
+    socket.on('humidity', data => {
+      this.setState({recentHum: data.humidity});
+    })
+    socket.on('weight', data => {
+      this.setState({recentWeight: data.weight});
+    })
+    axios.get('/get_module/' + this.state.moduleId)
+    .then(res => {
+      let tempData = this.state.tempData;
+      let humData = this.state.humData;
+      let weightData = this.state.weightData;
+
+      console.log('TEMP DATA', tempData.datasets);
+
+      for(let index in res.data.temperatureReadings){
+        tempData.labels.push(Moment(res.data.temperatureReadings[index].time).format('MM/DD, h:mm'));
+        tempData.datasets[0].data.push(parseFloat(res.data.temperatureReadings[index].temperature_reading));
+      }
+
+      for(let index in res.data.humidityReadings){
+        humData.labels.push(Moment(res.data.humidityReadings[index].time).format('MM/DD, h:mm'));
+        humData.datasets[0].data.push(parseFloat(res.data.humidityReadings[index].temperature_reading));
+      }
+
+      for(let index in res.data.weightReadings){
+        tempData.labels.push(Moment(res.data.weightReadings[index].time).format('MM/DD, h:mm'));
+        tempData.datasets[0].data.push(parseFloat(res.data.weightReadings[index].temperature_reading));
+      }
+
+      this.setState(tempData)
+      console.log('STATE', this.state);
+
+    })
   }
 
   render() {
@@ -47,88 +122,26 @@ class ModuleGraph extends React.Component {
           <div className="container">
 
             <div className="content-wrap" id="tempReadings">
-
               <div className="section-header">
                 <p>Temperature Readings</p>
               </div>
-
-              <MyChart moduleId={this.state.moduleId}/>
-
-              <table>
-                <tbody>
-
-                  <tr>
-                    <th>Sensor ID</th>
-                    <th>Time</th>
-                    <th>Temp</th>
-                  </tr>
-
-                  <tr>
-                    <td>reading.sensor_id</td>
-                    <td>getTime()</td>
-                    <td>reading.temperature_reading + " F"</td>
-                  </tr>
-
-                </tbody>
-              </table>
-
+              <MyChart data={this.state.tempData} chartType={'Temp'} />
             </div>
 
-            <div className="content-wrap" id="humReadings">
 
+            <div className="content-wrap" id="tempReadings">
               <div className="section-header">
                 <p>Humidity Readings</p>
               </div>
-
-              <canvas id="humChart" width="400" height="150"></canvas>
-
-              <table>
-                <tbody>
-
-                  <tr>
-                    <th>Sensor ID</th>
-                    <th>Time</th>
-                    <th>Hum</th>
-                  </tr>
-
-                  <tr>
-                    <td>reading.sensor_id</td>
-                    <td>getTime()</td>
-                    <td>reading.humidity_reading + " %"</td>
-                  </tr>
-
-                </tbody>
-              </table>
-
+              <MyChart data={this.state.humData} chartType={'Humidity'} />
             </div>
 
-            <div className="content-wrap" id="weightReadings">
 
+            <div className="content-wrap" id="tempReadings">
               <div className="section-header">
                 <p>Weight Readings</p>
-                <p>weightDisplay</p>
               </div>
-
-              <canvas id="weightChart" width="400" height="150"></canvas>
-
-
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Sensor ID</th>
-                    <th>Time</th>
-                    <th>Weight</th>
-                  </tr>
-
-                  <tr>
-                    <td>reading.sensor_id</td>
-                    <td>getTime()</td>
-                    <td>reading.weight_reading</td>
-                  </tr>
-
-                </tbody>
-              </table>
-
+              <MyChart data={this.state.weightData} chartType={'Weight'} />
             </div>
 
           </div>

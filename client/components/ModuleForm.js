@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Popup from 'react-popup';
 import Loading from './Loading';
+import openSocket from 'socket.io-client';
 
 class ModuleForm extends React.Component {
 
@@ -11,7 +12,10 @@ class ModuleForm extends React.Component {
     super(props);
     this.state = {
       moduleData: this.props.moduleData,
-      charHigh: (this.props.moduleData.moduleNotes >= 250)
+      charHigh: (this.props.moduleData.moduleNotes >= 250),
+      recentTemp: null,
+      recentHum: null,
+      recentWeight: null
     }
     this.moduleUpdate = this.moduleUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -19,6 +23,23 @@ class ModuleForm extends React.Component {
   }
 
   componentDidMount() {
+    console.log('STATE', this.state);
+    const socket = openSocket('http://localhost:4200');
+    socket.on('temperature', data => {
+      if (data.moduleId === this.state.moduleData.module_id) {
+        this.setState({recentTemp: data.temperature});
+      }
+    })
+    socket.on('humidity', data => {
+      if (data.moduleId === this.state.moduleData.module_id) {
+        this.setState({recentHum: data.humidity});
+      }
+    })
+    socket.on('weight', data => {
+      if (data.moduleId === this.state.moduleData.module_id) {
+        this.setState({recentWeight: data.weight});
+      }
+    })
   }
 
   viewGraph () {
@@ -71,9 +92,9 @@ class ModuleForm extends React.Component {
             <p>Sensor ID: {this.state.moduleData.sensor_id ? this.state.moduleData.sensor_id : ''}</p>
             <p>Scale ID: {this.state.moduleData.scale_id ? this.state.moduleData.scale_id : ''}</p>
 
-            <p>Weight:{this.state.moduleData.weight_reading ? this.state.moduleData.weight_reading : ''}</p>
-            <p>Temperature:{this.state.moduleData.temperature_reading ? this.state.moduleData.temperature_reading : ''}</p>
-            <p>Humidity:{this.state.moduleData.humidity_reading ? this.state.moduleData.humidity_reading : ''}</p>
+            <p>Weight: {this.state.recentWeight ? this.state.recentWeight : parseFloat(this.state.moduleData.weight_reading)}</p>
+            <p>Temperature: {this.state.recentTemp ? this.state.recentTemp : parseFloat(this.state.moduleData.temperature_reading)}</p>
+            <p>Humidity: {this.state.recentHum ? this.state.recentHum : parseFloat(this.state.moduleData.humidity_reading)}</p>
 
             <form name="updateForm" className="" method="post" onChange={this.handleChange} onSubmit={this.moduleUpdate}>
 

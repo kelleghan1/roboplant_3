@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').createServer(app);
 const cors = require('cors');
 
-const io = require('socket.io')(server);
+const io = require('socket.io')();
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const port = 3000;
@@ -36,3 +36,5 @@ app.all('*', (req, res, next) => {
 app.listen(port, () => {
     console.log(`Listening on Port: ${port}`);
 });
+
+io.listen(4200);

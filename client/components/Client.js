@@ -26,7 +26,7 @@ class Client extends React.Component {
     axios.get('/get_client/' + this.clientId)
     .then(res => {
       this.setState(res);
-      this.setState({loading: false}, () => {console.log(this.state)});
+      this.setState({loading: false});
     })
   }
 

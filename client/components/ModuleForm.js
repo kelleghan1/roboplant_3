@@ -13,9 +13,9 @@ class ModuleForm extends React.Component {
     this.state = {
       moduleData: this.props.moduleData,
       charHigh: (this.props.moduleData.moduleNotes >= 250),
-      recentTemp: null,
-      recentHum: null,
-      recentWeight: null
+      recentTemp: this.props.moduleData.temperature_reading,
+      recentHum: this.props.moduleData.humidity_reading,
+      recentWeight: this.props.moduleData.weight_reading
     }
     this.moduleUpdate = this.moduleUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -23,8 +23,8 @@ class ModuleForm extends React.Component {
   }
 
   componentDidMount() {
-    console.log('STATE', this.state);
-    const socket = openSocket('http://localhost:4200');
+    console.log('PROPS', this.props);
+    const socket = openSocket('http://localhost:4200'); 
     socket.on('temperature', data => {
       if (data.moduleId === this.state.moduleData.module_id) {
         this.setState({recentTemp: data.temperature});
@@ -92,9 +92,9 @@ class ModuleForm extends React.Component {
             <p>Sensor ID: {this.state.moduleData.sensor_id ? this.state.moduleData.sensor_id : ''}</p>
             <p>Scale ID: {this.state.moduleData.scale_id ? this.state.moduleData.scale_id : ''}</p>
 
-            <p>Weight: {this.state.recentWeight ? this.state.recentWeight : parseFloat(this.state.moduleData.weight_reading)}</p>
-            <p>Temperature: {this.state.recentTemp ? this.state.recentTemp : parseFloat(this.state.moduleData.temperature_reading)}</p>
-            <p>Humidity: {this.state.recentHum ? this.state.recentHum : parseFloat(this.state.moduleData.humidity_reading)}</p>
+            <p>Weight: {this.state.recentWeight}</p>
+            <p>Temperature: {this.state.recentTemp}</p>
+            <p>Humidity: {this.state.recentHum}</p>
 
             <form name="updateForm" className="" method="post" onChange={this.handleChange} onSubmit={this.moduleUpdate}>
 

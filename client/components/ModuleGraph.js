@@ -15,103 +15,105 @@ class ModuleGraph extends React.Component {
     this.state = {
       dataSet: false,
       moduleId: this.props.match.params.moduleId,
-      tempData:{
-        labels: [],
-        datasets:[
-          {
-            label:'Temperature (C)',
-            data:[],
-            backgroundColor: 'rgba(115, 167, 66, 0.2)',
-            borderColor: 'rgba(115, 167, 66, 1)'
-          }
-        ]
-      },
-      humData:{
-        labels: [],
-        datasets:[
-          {
-            label:'Humidity (%)',
-            data:[],
-            backgroundColor: 'rgba(115, 167, 66, 0.2)',
-            borderColor: 'rgba(115, 167, 66, 1)'
-          }
-        ]
-      },
-      weightData:{
-        labels: [],
-        datasets:[
-          {
-            label:'Weight (Kg)',
-            data:[],
-            backgroundColor: 'rgba(115, 167, 66, 0.2)',
-            borderColor: 'rgba(115, 167, 66, 1)'
-          }
-        ]
-      }
+      tempData: [],
+      tempLabels: [],
+      humData: [],
+      humLabels: [],
+      weightData: [],
+      weightLabels: [],
     }
   }
 
   componentDidMount() {
-    console.log('STATE INITIAL', this.state);
     const socket = openSocket('http://localhost:4200');
     socket.off('temperature');
     socket.off('humidity');
     socket.off('weight');
 
     socket.on('temperature', data => {
-      console.log('DATA', data);
       if (this.state.dataSet) {
-        let tempData = {...this.state.tempData};
-        console.log('TEMP 1', tempData)
-        tempData.labels.push(Moment(data.time).format('MM/DD, h:mm'));
-        tempData.datasets[0].data.push(parseFloat(data.temperature));
-        console.log('TEMP 2', tempData)        
-        this.setState({tempData: tempData, recentTemp: data.temperature});
-        console.log('STATE 2', this.state)
+
+        let tempData = this.state.tempData.slice(0);
+        let tempLabels = this.state.tempLabels.slice(0);
+
+        tempLabels.push(Moment(data.time).format('MM/DD, h:mm'));
+        tempData.push(parseFloat(data.temperature));
+        this.setState({tempData: tempData, tempLabels: tempLabels, recentTemp: data.temperature});
       }
     })
-    // socket.on('humidity', data => {
-    //   this.setState({recentHum: data.humidity});
-    // })
-    // socket.on('weight', data => {
-    //   this.setState({recentWeight: data.weight});
-    // })
+
+    socket.on('humidity', data => {
+      // this.setState({recentHum: data.humidity});
+      if (this.state.dataSet) {
+        console.log('HUMIDITY', data)
+
+        let humData = this.state.humData.slice(0);
+        let humLabels = this.state.humLabels.slice(0);
+
+        humLabels.push(Moment(data.time).format('MM/DD, h:mm'));
+        humData.push(parseFloat(data.humidity));
+        this.setState({humData: humData, humLabels: humLabels, recentHum: data.humidity});
+      }
+    })
+
+    socket.on('weight', data => {
+      // this.setState({recentWeight: data.weight});
+      if (this.state.dataSet) {
+        let weightData = this.state.weightData.slice(0);
+        let weightLabels = this.state.weightLabels.slice(0);
+
+        weightLabels.push(Moment(data.time).format('MM/DD, h:mm'));
+        weightData.push(parseFloat(data.weight));
+        this.setState({weightData: weightData, weightLabels: weightLabels, recentHum: data.weight});
+      }
+    })
 
     axios.get('/get_module/' + this.state.moduleId)
     .then(res => {
-      let tempData = {...this.state.tempData};
-      let humData = {...this.state.humData};
-      let weightData = {...this.state.weightData};
+      let tempData = [];
+      let tempLabels = [];
+
+      let humData = [];
+      let humLabels = [];
+
+      let weightData = [];
+      let weightLabels = [];
 
       for(let index in res.data.temperatureReadings){
-        tempData.labels.push(Moment(res.data.temperatureReadings[index].time).format('MM/DD, h:mm'));
-        tempData.datasets[0].data.push(parseFloat(res.data.temperatureReadings[index].temperature_reading));
+        tempLabels.push(Moment(res.data.temperatureReadings[index].time).format('MM/DD, h:mm'));
+        tempData.push(parseFloat(res.data.temperatureReadings[index].temperature_reading));
       }
 
       for(let index in res.data.humidityReadings){
-        humData.labels.push(Moment(res.data.humidityReadings[index].time).format('MM/DD, h:mm'));
-        humData.datasets[0].data.push(parseFloat(res.data.humidityReadings[index].humidity_reading));
+        humLabels.push(Moment(res.data.humidityReadings[index].time).format('MM/DD, h:mm'));
+        humData.push(parseFloat(res.data.humidityReadings[index].humidity_reading));
       }
 
       for(let index in res.data.weightReadings){
-        weightData.labels.push(Moment(res.data.weightReadings[index].time).format('MM/DD, h:mm'));
-        weightData.datasets[0].data.push(parseFloat(res.data.weightReadings[index].weight_reading));
+        weightLabels.push(Moment(res.data.weightReadings[index].time).format('MM/DD, h:mm'));
+        weightData.push(parseFloat(res.data.weightReadings[index].weight_reading));
       }
 
       let theData = {
         dataSet: true,
-        tempData: tempData, 
-        humData: humData, 
-        weightData: weightData
+        tempData: tempData,
+        tempLabels: tempLabels,
+        humData: humData,
+        humLabels: humLabels,
+        weightData: weightData,
+        weightLabels: weightLabels
       }
 
       this.setState(theData);
-
     })
   }
 
-  render() {
+  // changeHandler() {
+  //   console.log('RERENDER')
+  //   React.render()
+  // }
 
+  render() {
     return (
       <div>
         <Header />
@@ -141,24 +143,22 @@ class ModuleGraph extends React.Component {
               <div className="section-header">
                 <p>Temperature Readings</p>
               </div>
-              <MyChart data={this.state.tempData} chartType={'Temp'} />
+              <MyChart data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temp'} />
             </div>
-{/* 
-            <div className="content-wrap" id="tempReadings">
+
+            <div className="content-wrap" id="humReadings">
               <div className="section-header">
                 <p>Humidity Readings</p>
               </div>
-              <MyChart data={this.state.humData} chartType={'Humidity'} />
+              <MyChart data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} />
             </div>
 
-
-
-            <div className="content-wrap" id="tempReadings">
+            <div className="content-wrap" id="weightReadings">
               <div className="section-header">
                 <p>Weight Readings</p>
               </div>
-              <MyChart data={this.state.weightData} chartType={'Weight'} />
-            </div> */}
+              <MyChart data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} />
+            </div>
 
           </div>
         </section>

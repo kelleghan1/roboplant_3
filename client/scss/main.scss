@@ -72,6 +72,7 @@ header{
   bottom: 0;
   top: 0;
 }
+
 #loading > #loading-wrap{
   display: inline-block;
   padding: 20px;
@@ -79,6 +80,7 @@ header{
   background-color: #fff;
   margin-top: 100px;
 }
+
 #loading > #loading-wrap > img{
 }
 
@@ -101,7 +103,7 @@ section{
 }
 
 .section-header{
-  background-color: #73A742;
+  background-color: #4274a7;
   color: #fff;
   padding: 15px;
   margin-bottom: 10px;
@@ -132,7 +134,7 @@ section{
 }
 
 .client-header{
-  background-color: #73A742;
+  background-color: #4274a7;
   border-radius: 5px;
   padding: 15px;
   margin-bottom: 10px;
@@ -141,7 +143,7 @@ section{
 }
 
 .module-header{
-  background-color: #73A742;
+  background-color: #4274a7;
   padding: 15px;
   margin-bottom: 10px;
   color: #fff;
@@ -191,7 +193,7 @@ section{
 }
 
 .view-readings, .delete-module{
-  background-color: #73A742;
+  background-color: #4274a7;
   padding: 10px 15px;
   border-radius: 5px;
   display: inline-block;

@@ -7,62 +7,75 @@ class MyChart extends Component  {
 
   constructor(props) {
     super(props);
-    this.state = {data: this.props.data};
+    // this.state = {data: this.props.data};
     // this.state = {
-    //   dataSet: false,
-    //   moduleId: this.props.match.params.moduleId,
-    //   tempData:{
-    //     labels: [],
-    //     datasets:[
-    //       {
-    //         label:'Temperature (C)',
-    //         data:[],
-    //         backgroundColor: 'rgba(115, 167, 66, 0.2)',
-    //         borderColor: 'rgba(115, 167, 66, 1)'
-    //       }
-    //     ]
-    //   },
-    //   humData:{
-    //     labels: [],
-    //     datasets:[
-    //       {
-    //         label:'Humidity (%)',
-    //         data:[],
-    //         backgroundColor: 'rgba(115, 167, 66, 0.2)',
-    //         borderColor: 'rgba(115, 167, 66, 1)'
-    //       }
-    //     ]
-    //   },
-    //   weightData:{
-    //     labels: [],
-    //     datasets:[
-    //       {
-    //         label:'Weight (Kg)',
-    //         data:[],
-    //         backgroundColor: 'rgba(115, 167, 66, 0.2)',
-    //         borderColor: 'rgba(115, 167, 66, 1)'
-    //       }
-    //     ]
-    //   }
+    //   data: [],
+    //   labels: []
     // }
+    this.state = {
+      labels: [],
+      datasets:[
+        {
+          label: this.props.chartType === 'Temp' ? 'Temperature (C)' : this.props.chartType === 'Humidity' ? 'Humidity (%)' : this.props.chartType === 'Weight' ? 'Weight (g)' : '',
+          data: [],
+          backgroundColor: 'rgba(115, 167, 66, 0.2)',
+          borderColor: 'rgba(115, 167, 66, 1)'
+        }
+      ]
+    }
   };
 
-  componentDidMount() {
-    console.log('PROPS', this.props);
-    console.log('STATE', this.state);
-  };
+  componentWillReceiveProps(props) {
+    const newData = props.data.map((item) => {return item;})
+    const newLabels = props.labels.map((item) => {return item;})
+    this.setState({
+      labels: newLabels,
+      datasets:[
+        {
+          label: this.props.chartType === 'Temp' ? 'Temperature (C)' : this.props.chartType === 'Humidity' ? 'Humidity (%)' : this.props.chartType === 'Weight' ? 'Weight (g)' : '',
+          data: newData,
+          backgroundColor: 'rgba(115, 167, 66, 0.2)',
+          borderColor: 'rgba(115, 167, 66, 1)'
+        }
+      ]
+    })
+  }
 
   render() {
+    console.log('CHART', this.props.chartType)
     const options = {
-      title:{
-        display: this.props.chartType
+      // title:{
+      //   display: this.props.chartType
+      // },
+      // datasetFill: false,
+      // responsive: true
+      // maintainAspectRatio: false
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: false
+          }
+        }]
       }
     }
-    return (
+    
+    const chartData = {
+      labels: this.state.labels,
+      datasets:[
+        {
+          label:'Temperature (C)',
+          data: this.state.data,
+          backgroundColor: 'rgba(115, 167, 66, 0.2)',
+          borderColor: 'rgba(115, 167, 66, 1)'
+        }
+      ]
+    }
 
+    return (
       <div>
         <Line
-          data={this.state.data}
+          redraw={true}
+          data={this.state}
           options={options}
           />
       </div>

@@ -8,7 +8,7 @@ import MyChart from './MyChart';
 import openSocket from 'socket.io-client';
 import Moment from 'moment';
 
-class ModuleGraph extends React.Component {
+class ModuleGraphs extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,15 +22,11 @@ class ModuleGraph extends React.Component {
       weightData: [],
       weightLabels: [],
     }
+    this.socket = openSocket('http://localhost:4200');         
   }
 
   componentDidMount() {
-    const socket = openSocket('http://localhost:4200');
-    socket.off('temperature');
-    socket.off('humidity');
-    socket.off('weight');
-
-    socket.on('temperature', data => {
+    this.socket.on('temperature', data => {
       if (this.state.dataSet) {
 
         let tempData = this.state.tempData.slice(0);
@@ -42,7 +38,7 @@ class ModuleGraph extends React.Component {
       }
     })
 
-    socket.on('humidity', data => {
+    this.socket.on('humidity', data => {
       if (this.state.dataSet) {
         let humData = this.state.humData.slice(0);
         let humLabels = this.state.humLabels.slice(0);
@@ -53,7 +49,7 @@ class ModuleGraph extends React.Component {
       }
     })
 
-    socket.on('weight', data => {
+    this.socket.on('weight', data => {
       if (this.state.dataSet) {
         let weightData = this.state.weightData.slice(0);
         let weightLabels = this.state.weightLabels.slice(0);
@@ -104,6 +100,10 @@ class ModuleGraph extends React.Component {
     })
   }
 
+  componentWillUnmount(){
+    this.socket.close();
+  }
+
   render() {
     return (
       <div>
@@ -129,28 +129,9 @@ class ModuleGraph extends React.Component {
 
         <section>
           <div className="container">
-
-            <div className="content-wrap" id="tempReadings">
-              <div className="section-header">
-                <p>Temperature Readings</p>
-              </div>
-              <MyChart data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temp'} />
-            </div>
-
-            <div className="content-wrap" id="humReadings">
-              <div className="section-header">
-                <p>Humidity Readings</p>
-              </div>
+              <MyChart data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temperature'} />
               <MyChart data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} />
-            </div>
-
-            <div className="content-wrap" id="weightReadings">
-              <div className="section-header">
-                <p>Weight Readings</p>
-              </div>
               <MyChart data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} />
-            </div>
-
           </div>
         </section>
 
@@ -159,4 +140,4 @@ class ModuleGraph extends React.Component {
   }
 }
 
-export default ModuleGraph;
+export default ModuleGraphs;

@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import App from './components/App';
 import Home from './components/Home';
 import Client from './components/Client';
-import ModuleGraph from './components/ModuleGraph';
+import ModuleGraphs from './components/ModuleGraphs';
 import MyChart from './components/MyChart';
 
 
@@ -16,8 +16,7 @@ class Routes extends React.Component {
           <Switch>
             <Route exact name="home" path="/" component={Home} />
             <Route exact name="client" path="/client/:clientName/:clientId" component={Client} />
-            <Route exact name="moduleGraph" path="/module/graph/:moduleName/:moduleId" component={ModuleGraph} />
-            <Route exact name="chart" path="/chart" component={MyChart} />
+            <Route exact name="moduleGraphs" path="/module/graphs/:moduleName/:moduleId" component={ModuleGraphs} />
           </Switch>
         </div>
       </BrowserRouter>

@@ -4,14 +4,14 @@ import Moment from 'moment';
 import { Line } from 'react-chartjs-2';
 
 class MyChart extends Component  {
-
   constructor(props) {
     super(props);
+    this.chartUnit = props.chartType === 'Temperature' ? '(C)' : this.props.chartType === 'Humidity' ? '(%)' : this.props.chartType === 'Weight' ? '(g)' : '',    
     this.state = {
       labels: [],
       datasets:[
         {
-          label: this.props.chartType === 'Temp' ? 'Temperature (C)' : this.props.chartType === 'Humidity' ? 'Humidity (%)' : this.props.chartType === 'Weight' ? 'Weight (g)' : '',
+          label: props.chartType + ' ' + this.chartUnit,
           data: [],
           backgroundColor: 'rgba(115, 167, 66, 0.2)',
           borderColor: 'rgba(115, 167, 66, 1)'
@@ -27,7 +27,7 @@ class MyChart extends Component  {
       labels: newLabels,
       datasets:[
         {
-          label: this.props.chartType === 'Temp' ? 'Temperature (C)' : this.props.chartType === 'Humidity' ? 'Humidity (%)' : this.props.chartType === 'Weight' ? 'Weight (g)' : '',
+          label: props.chartType + ' ' + this.chartUnit,
           data: newData,
           backgroundColor: 'rgba(115, 167, 66, 0.2)',
           borderColor: 'rgba(115, 167, 66, 1)'
@@ -47,27 +47,19 @@ class MyChart extends Component  {
       }
     }
     
-    const chartData = {
-      labels: this.state.labels,
-      datasets:[
-        {
-          label:'Temperature (C)',
-          data: this.state.data,
-          backgroundColor: 'rgba(115, 167, 66, 0.2)',
-          borderColor: 'rgba(115, 167, 66, 1)'
-        }
-      ]
-    }
-
     return (
-      <div>
-        <Line
-          redraw={true}
-          data={this.state}
-          options={options}
+      <div className="content-wrap">
+        <div className="section-header">
+          <p>{this.props.chartType} Readings</p>
+        </div>
+        <div>
+          <Line
+            redraw={false}
+            data={this.state}
+            options={options}
           />
+        </div>
       </div>
-
     )
   }
 }

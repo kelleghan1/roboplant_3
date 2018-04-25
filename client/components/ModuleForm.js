@@ -19,36 +19,37 @@ class ModuleForm extends React.Component {
     }
     this.moduleUpdate = this.moduleUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.viewGraph = this.viewGraph.bind(this);
+    this.viewGraphs = this.viewGraphs.bind(this);
+    this.socket = openSocket('http://localhost:4200');     
   }
 
-  componentDidMount() {
-    const socket = openSocket('http://localhost:4200'); 
-    socket.on('temperature', data => {
+  componentDidMount () {
+    this.socket.on('temperature', data => {
       if (data.moduleId === this.state.moduleData.module_id) {
         this.setState({recentTemp: data.temperature});
       }
     })
-    socket.on('humidity', data => {
+    this.socket.on ('humidity', data => {
       if (data.moduleId === this.state.moduleData.module_id) {
         this.setState({recentHum: data.humidity});
       }
     })
-    socket.on('weight', data => {
+    this.socket.on ('weight', data => {
       if (data.moduleId === this.state.moduleData.module_id) {
         this.setState({recentWeight: data.weight});
       }
     })
   }
 
-  viewGraph () {
-    socket.off('temperature');
-    socket.off('humidity');
-    socket.off('weight');
-    this.props.history.push('/module/graph/' + this.props.moduleData.module_name + '/' + this.props.moduleData.module_id);
+  componentWillUnmount () {
+    this.socket.close();
   }
 
-  moduleUpdate(event) {
+  viewGraphs () {
+    this.props.history.push('/module/graphs/' + this.props.moduleData.module_name + '/' + this.props.moduleData.module_id);
+  }
+
+  moduleUpdate (event) {
     if (!this.state.charHigh) {
       const reqObj = {
         clientId: this.state.moduleData.client_id,
@@ -62,7 +63,7 @@ class ModuleForm extends React.Component {
     event.preventDefault();
   }
 
-  handleChange(event) {
+  handleChange (event) {
     let changeObj = this.state.moduleData;
     let charCount = event.target.value.length;
     changeObj[event.target.name] = event.target.value;
@@ -74,8 +75,7 @@ class ModuleForm extends React.Component {
     }
   }
 
-  render() {
-
+  render () {
     return (
 
       <div className="module-wrap">
@@ -88,7 +88,7 @@ class ModuleForm extends React.Component {
 
           <div className="animation module-inner">
 
-            <p className="view-readings" onClick={this.viewGraph}>View Readings <i className="fa fa-arrow-right" aria-hidden="true"></i></p>
+            <p className="view-readings" onClick={this.viewGraphs}>View Readings <i className="fa fa-arrow-right" aria-hidden="true"></i></p>
             <p className="delete-module"><i className="fa fa-trash" aria-hidden="true"></i> Delete Module</p>
 
             <p>Sensor ID: {this.state.moduleData.sensor_id ? this.state.moduleData.sensor_id : ''}</p>

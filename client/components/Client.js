@@ -4,12 +4,11 @@ import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Popup from 'react-popup';
 import Loading from './Loading';
-import Module from './Module';
+// import Module from './Module';
 import FieldWorker from './FieldWorker';
 import ModuleForm from './ModuleForm';
 
 class Client extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {

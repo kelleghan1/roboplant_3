@@ -7,11 +7,6 @@ class MyChart extends Component  {
 
   constructor(props) {
     super(props);
-    // this.state = {data: this.props.data};
-    // this.state = {
-    //   data: [],
-    //   labels: []
-    // }
     this.state = {
       labels: [],
       datasets:[
@@ -42,14 +37,7 @@ class MyChart extends Component  {
   }
 
   render() {
-    console.log('CHART', this.props.chartType)
     const options = {
-      // title:{
-      //   display: this.props.chartType
-      // },
-      // datasetFill: false,
-      // responsive: true
-      // maintainAspectRatio: false
       scales: {
         yAxes: [{
           ticks: {

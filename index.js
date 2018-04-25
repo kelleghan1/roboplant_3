@@ -22,16 +22,13 @@ app.set('socketio', io);
 
 app.use('/', index);
 
-
 app.use(express.static(__dirname + '/client'));
-
 
 app.all('*', (req, res, next) => {
     res.sendFile('index.html', {
         root: __dirname + '/client'
     });
 });
-
 
 app.listen(port, () => {
     console.log(`Listening on Port: ${port}`);

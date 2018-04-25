@@ -23,7 +23,6 @@ class ModuleForm extends React.Component {
   }
 
   componentDidMount() {
-    console.log('PROPS', this.props);
     const socket = openSocket('http://localhost:4200'); 
     socket.on('temperature', data => {
       if (data.moduleId === this.state.moduleData.module_id) {
@@ -43,6 +42,9 @@ class ModuleForm extends React.Component {
   }
 
   viewGraph () {
+    socket.off('temperature');
+    socket.off('humidity');
+    socket.off('weight');
     this.props.history.push('/module/graph/' + this.props.moduleData.module_name + '/' + this.props.moduleData.module_id);
   }
 

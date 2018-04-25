@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Popup from 'react-popup';
 import Loading from './Loading';
-import MyChart from './MyChart';
+import MySpreadsheet from './MySpreadsheet';
 import openSocket from 'socket.io-client';
 import Moment from 'moment';
 
@@ -134,21 +134,21 @@ class ModuleGraph extends React.Component {
               <div className="section-header">
                 <p>Temperature Readings</p>
               </div>
-              <MyChart data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temp'} />
+              <MySpreadsheet data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temp'} />
             </div>
 
             <div className="content-wrap" id="humReadings">
               <div className="section-header">
                 <p>Humidity Readings</p>
               </div>
-              <MyChart data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} />
+              <MySpreadsheet data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} />
             </div>
 
             <div className="content-wrap" id="weightReadings">
               <div className="section-header">
                 <p>Weight Readings</p>
               </div>
-              <MyChart data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} />
+              <MySpreadsheet data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} />
             </div>
 
           </div>

@@ -48,7 +48,7 @@ class ModuleSpreadsheets extends React.Component {
         <section>
           <div className="container" id="module_info">
             <div className="client-header">
-              <p><i className="fa fa-leaf" aria-hidden="true"></i> Module: {this.clientName}</p>
+              <p><i className="fa fa-leaf" aria-hidden="true"></i> Client: {this.clientName}</p>
             </div>
           </div>
         </section>
@@ -60,38 +60,15 @@ class ModuleSpreadsheets extends React.Component {
             </div>
           </div>
         </section>
-
-        <section>
-          <div className="container" id="module_info">
-            <div className="client-header">
-              <p><i className="fa fa-leaf" aria-hidden="true"></i> Module: {this.moduleName}</p>
-            </div>
-          </div>
-        </section>
-
 
         <section>
           <div className="container">
 
             <div className="content-wrap" id="tempReadings">
               <div className="section-header">
-                <p>Temperature Readings</p>
+                <p>Download CSV file</p>
               </div>
               {/* <MySpreadsheet data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temp'} /> */}
-            </div>
-
-            <div className="content-wrap" id="humReadings">
-              <div className="section-header">
-                <p>Humidity Readings</p>
-              </div>
-              {/* <MySpreadsheet data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} /> */}
-            </div>
-
-            <div className="content-wrap" id="weightReadings">
-              <div className="section-header">
-                <p>Weight Readings</p>
-              </div>
-              {/* <MySpreadsheet data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} /> */}
             </div>
 
           </div>

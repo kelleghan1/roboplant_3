@@ -20,6 +20,7 @@ class ModuleForm extends React.Component {
     this.moduleUpdate = this.moduleUpdate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.viewGraphs = this.viewGraphs.bind(this);
+    this.clientName = this.props.clientName;
     this.socket = openSocket('http://localhost:4200');     
   }
 
@@ -46,7 +47,7 @@ class ModuleForm extends React.Component {
   }
 
   viewGraphs () {
-    this.props.history.push('/module/graphs/' + this.props.moduleData.module_name + '/' + this.props.moduleData.module_id);
+    this.props.history.push('/module/graphs/' + this.clientName + '/' + this.props.moduleData.module_name + '/' + this.props.moduleData.module_id);
   }
 
   moduleUpdate (event) {

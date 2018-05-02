@@ -19,6 +19,7 @@ class Client extends React.Component {
     this.updateModule = this.updateModule.bind(this);
     this.renderWorkers = this.renderWorkers.bind(this);
     this.clientId = this.props.match.params.clientId;
+    this.clientName = this.props.match.params.clientName;
   }
 
   componentDidMount() {
@@ -122,7 +123,7 @@ class Client extends React.Component {
   renderModules() {
     return this.state.data.modules.map((item, index) => {
       return (
-        <ModuleForm key={index} handleModuleUpdate={this.updateModule} moduleData={item} />
+        <ModuleForm clientName={this.clientName} clientId={this.clientId} key={index} handleModuleUpdate={this.updateModule} moduleData={item} />
       )
     })
   }

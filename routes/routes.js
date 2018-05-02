@@ -219,7 +219,6 @@ router.post('/update_module', function(req, res, next) {
 });
 
 
-
 router.post('/delete_module', function(req, res, next) {
 
   knex('modules').where({module_id: req.body.moduleId}).del()

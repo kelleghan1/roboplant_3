@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './Header';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Popup from 'react-popup';
 import Loading from './Loading';
@@ -22,7 +22,11 @@ class ModuleGraphs extends React.Component {
       weightData: [],
       weightLabels: [],
     }
-    this.socket = openSocket('http://localhost:4200');         
+    this.handleSpreadsheetClick = this.handleSpreadsheetClick.bind(this);
+    this.clientName = this.props.match.params.clientName;
+    this.moduleName = this.props.match.params.moduleName;
+    this.moduleId = this.props.match.params.moduleId;
+    this.socket = openSocket('http://localhost:4200');      
   }
 
   componentDidMount() {
@@ -100,8 +104,12 @@ class ModuleGraphs extends React.Component {
     })
   }
 
-  componentWillUnmount(){
+  componentWillUnmount () {
     this.socket.close();
+  }
+
+  handleSpreadsheetClick () {
+    this.props.history.push('/module/spreadsheets/' + this.clientName + '/' + this.moduleName + '/' + this.moduleId);
   }
 
   render() {
@@ -113,7 +121,7 @@ class ModuleGraphs extends React.Component {
             <div className="client-header">
               <div id="return-button">
                 <i className="fa fa-arrow-left" aria-hidden="true"></i>
-                Return To Client clientName
+                Return To Client {this.clientName}
               </div>
             </div>
           </div>
@@ -122,16 +130,44 @@ class ModuleGraphs extends React.Component {
         <section>
           <div className="container" id="module_info">
             <div className="client-header">
-              <p><i className="fa fa-leaf" aria-hidden="true"></i> Module: moduleName</p>
+              <p><i className="fa fa-leaf" aria-hidden="true"></i> Module: {this.moduleName}</p>
             </div>
           </div>
         </section>
 
         <section>
           <div className="container">
-              <MyChart data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temperature'} />
-              <MyChart data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} />
-              <MyChart data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} />
+          
+            <div className="content-wrap">
+              <div className="section-header">
+                <p>{this.props.chartType} Readings</p>
+                <button onClick={this.handleSpreadsheetClick}>Spreadsheet</button>
+              </div>
+              <div>
+                <MyChart data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temperature'} />
+              </div>
+            </div>
+
+            <div className="content-wrap">
+              <div className="section-header">
+                <p>{this.props.chartType} Readings</p>
+                <button onClick={this.handleSpreadsheetClick}>Spreadsheet</button>
+              </div>
+              <div>
+                <MyChart data={this.state.humData} labels={this.state.humLabels} chartType={'Humidity'} />
+              </div>
+            </div>
+
+            <div className="content-wrap">
+              <div className="section-header">
+                <p>{this.props.chartType} Readings</p>
+                <button onClick={this.handleSpreadsheetClick}>Spreadsheet</button>
+              </div>
+              <div>
+                <MyChart data={this.state.weightData} labels={this.state.weightLabels} chartType={'Weight'} />
+              </div>
+            </div>
+
           </div>
         </section>
 

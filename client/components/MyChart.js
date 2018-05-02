@@ -48,18 +48,11 @@ class MyChart extends Component  {
     }
     
     return (
-      <div className="content-wrap">
-        <div className="section-header">
-          <p>{this.props.chartType} Readings</p>
-        </div>
-        <div>
-          <Line
-            redraw={false}
-            data={this.state}
-            options={options}
-          />
-        </div>
-      </div>
+      <Line
+        redraw={false}
+        data={this.state}
+        options={options}
+      />
     )
   }
 }

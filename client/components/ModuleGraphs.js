@@ -169,8 +169,8 @@ class ModuleGraphs extends React.Component {
             </div>
 
           </div>
+          { this.state.loading ? <Loading /> : '' }
         </section>
-
       </div>
     )
   }

@@ -8,7 +8,6 @@ import openSocket from 'socket.io-client';
 import Moment from 'moment';
 
 class ModuleSpreadsheets extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -22,13 +21,38 @@ class ModuleSpreadsheets extends React.Component {
   componentDidMount() {
     axios.get('/get_module/' + this.state.moduleId)
       .then(res => {
-        console.log('RES', res)
+        let compReadings = [];
+
+        for (let i = 0; i < res.data.temperatureReadings.length; i++) {
+
+          let readingObj = {};
+
+          readingObj.time = Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm');
+          readingObj.temp = res.data.temperatureReadings[i].temperature_reading;
+
+          for (let ii = 0; ii < res.data.humidityReadings.length; ii++) {
+            if ( Moment(res.data.humidityReadings[ii].time).format('MM/DD, h:mm') == Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm') ) {
+              readingObj.hum = res.data.humidityReadings[ii].humidity_reading;
+            }
+          }
+
+          for (let iii = 0; iii < res.data.weightReadings.length; iii++) {
+            if ( Moment(res.data.weightReadings[iii].time).format('MM/DD, h:mm') == Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm') ) {
+              readingObj.weight = res.data.weightReadings[iii].weight_reading;
+            }
+          }
+
+          compReadings.push(readingObj);
+
+        }
+        console.log('RES.data2', compReadings)
+
       })
   }
 
-  handleReturnClick () {
-    this.props.history.push('/module/charts/' + this.clientName + '/' + this.moduleName + '/' + this.moduleId);
-  }
+  // handleReturnClick () {
+  //   this.props.history.push('/module/charts/' + this.clientName + '/' + this.moduleName + '/' + this.moduleId);
+  // }
 
   render() {
     return (

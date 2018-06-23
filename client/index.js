@@ -1,12 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import { Provider } from 'react-redux';
 import App from './components/App';
 import Popup from 'react-popup';
 
-// import { createStore, applyMiddleware } from 'redux';
-// import promise from 'redux-promise';
-// import reducers from './reducers/rootReducer';
 import 'bootstrap-loader';
 import './scss/main.scss';
 

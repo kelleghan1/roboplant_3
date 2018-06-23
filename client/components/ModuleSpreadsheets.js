@@ -12,49 +12,76 @@ class ModuleSpreadsheets extends React.Component {
     super(props);
     this.state = {
       moduleId: this.props.match.params.moduleId,
+      loading: false
     }
     this.clientName = this.props.match.params.clientName;
     this.moduleName = this.props.match.params.moduleName;
     this.moduleId = this.props.match.params.moduleId;
+    this.handleDownload = this.handleDownload.bind(this)
+    this.handleReturnClick = this.handleReturnClick.bind(this)
   }
 
   componentDidMount() {
+    this.setState({loading: true})
     axios.get('/get_module/' + this.state.moduleId)
       .then(res => {
         let compReadings = [];
 
         for (let i = 0; i < res.data.temperatureReadings.length; i++) {
 
-          let readingObj = {};
+          let readingObj = [];
 
-          readingObj.time = Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm');
-          readingObj.temp = res.data.temperatureReadings[i].temperature_reading;
+          readingObj.push('"' + Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm') + '"');
+          readingObj.push(res.data.temperatureReadings[i].temperature_reading);
 
           for (let ii = 0; ii < res.data.humidityReadings.length; ii++) {
-            if ( Moment(res.data.humidityReadings[ii].time).format('MM/DD, h:mm') == Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm') ) {
-              readingObj.hum = res.data.humidityReadings[ii].humidity_reading;
+            if (
+              (Moment(res.data.humidityReadings[ii].time).format('MM/DD, h:mm') ==
+              Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm')) &&
+              readingObj.indexOf(res.data.humidityReadings[ii].humidity_reading) === -1
+            ) {
+              readingObj.push(res.data.humidityReadings[ii].humidity_reading);
+              break;
             }
           }
 
           for (let iii = 0; iii < res.data.weightReadings.length; iii++) {
             if ( Moment(res.data.weightReadings[iii].time).format('MM/DD, h:mm') == Moment(res.data.temperatureReadings[i].time).format('MM/DD, h:mm') ) {
-              readingObj.weight = res.data.weightReadings[iii].weight_reading;
+              readingObj.push(res.data.weightReadings[iii].weight_reading);
+              break;
             }
           }
+
+          if(readingObj.length < 4) {readingObj.push('')}
 
           compReadings.push(readingObj);
 
         }
         console.log('RES.data2', compReadings)
-
+        this.setState({compReadings: compReadings, loading: false})
       })
   }
 
-  // handleReturnClick () {
-  //   this.props.history.push('/module/charts/' + this.clientName + '/' + this.moduleName + '/' + this.moduleId);
-  // }
+  handleDownload () {
+      var csv = 'Time,Temp,Hum,Weight\n';
+      this.state.compReadings.forEach(function(row) {
+              csv += row.join(',');
+              csv += "\n";
+      });
+   
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = 'readings.csv';
+      hiddenElement.click();
+      console.log('CSV', hiddenElement)
+  }
 
-  render() {
+  handleReturnClick () {
+    this.props.history.push('/module/graphs/' + this.clientName + '/' + this.moduleName + '/' + this.moduleId);
+  }
+
+  render () {
     return (
       <div>
         <Header />
@@ -92,10 +119,14 @@ class ModuleSpreadsheets extends React.Component {
               <div className="section-header">
                 <p>Download CSV file</p>
               </div>
+              <div>
+                <p className="delete-module" onClick={this.handleDownload}><i className="fa fa-trash" aria-hidden="true"></i> Download CSV file</p>
+              </div>
               {/* <MySpreadsheet data={this.state.tempData} labels={this.state.tempLabels} chartType={'Temp'} /> */}
             </div>
 
           </div>
+          { this.state.loading ? <Loading /> : '' }          
         </section>
 
       </div>

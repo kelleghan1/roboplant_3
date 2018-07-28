@@ -57,7 +57,7 @@ const helpers = require('../helpers');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+// const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 
 // const VENDOR_LIBS = [
 //     'axios', 'bootstrap', 'bootstrap-loader', 'bootstrap-sass',
@@ -80,7 +80,7 @@ module.exports = webpackMerge(commonConfig, {
         publicPath: '/'
     },
     plugins: [
-        new ProgressBarPlugin(),
+        // new ProgressBarPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
             names: ['vendor', 'manifest']
         }),

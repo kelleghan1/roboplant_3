@@ -8,6 +8,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ImageminPlugin = require('imagemin-webpack-plugin').default;
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
+const helpers = require('../helpers');
 
 const VENDOR_LIBS = [
     'axios', 'bootstrap', 'bootstrap-loader', 'bootstrap-sass',
@@ -24,7 +25,7 @@ module.exports = webpackMerge(commonConfig, {
         vendor: VENDOR_LIBS
     },
     output: {
-        path: __dirname,
+        path: helpers.root('dist'),
         filename: '[name].[chunkhash].js',
         publicPath: '/'
     },

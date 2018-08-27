@@ -222,9 +222,10 @@ router.post('/update_worker', function(req, res, next) {
 router.post("/post_data/:data", function(req, res){
   var sensorRequest = JSON.parse(req.params.data);
   var date = moment(new Date());
-  console.log('$$$$$$$$', sensorRequest)
+  console.log('ID', sensorRequest.sensorid)
   if (sensorRequest.hum1) {
-
+    console.log('HUMIDITY', sensorRequest.hum1)
+    console.log('TEMPERATURE', sensorRequest.temp1)
     knex('modules').where({sensor_id: sensorRequest.sensorid})
     .then(function(moduleResult){
 
@@ -249,7 +250,7 @@ router.post("/post_data/:data", function(req, res){
     });
 
   } else if (sensorRequest.hasOwnProperty('weight1')) {
-
+    console.log('WEIGHT', sensorRequest.weight1)
     knex('modules').where({scale_id: sensorRequest.sensorid})
     .then(function(moduleResult){
 

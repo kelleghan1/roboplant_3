@@ -26,7 +26,7 @@ class ModuleGraphs extends React.Component {
     this.clientName = this.props.match.params.clientName;
     this.moduleName = this.props.match.params.moduleName;
     this.moduleId = this.props.match.params.moduleId;
-    this.socket = openSocket('http://localhost:4200');      
+    this.socket = openSocket(NODE_ENV === 'development' ? 'http://localhost:4200' : '192.168.0.106:4200');     
   }
 
   componentDidMount() {

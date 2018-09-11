@@ -21,7 +21,7 @@ class ModuleForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.viewGraphs = this.viewGraphs.bind(this);
     this.clientName = this.props.clientName;
-    this.socket = openSocket('http://localhost:4200');     
+    this.socket = openSocket(NODE_ENV === 'development' ? 'http://localhost:4200' : '192.168.0.106:4200');     
   }
 
   componentDidMount () {

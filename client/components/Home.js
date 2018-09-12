@@ -11,7 +11,8 @@ class Home extends React.Component {
     super(props);
     this.state = {
       clientArr: [],
-      loading: true
+      loading: true,
+      handlingSubmit: false
     }
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -37,13 +38,18 @@ class Home extends React.Component {
   }
 
   handleSubmit(event) {
+    if (this.state.handlingSubmit) return
+
+    this.setState({ loading: true, handlingSubmit: true })
     event.target.clientName.blur();
+
     const clientName = event.target.clientName.value;
+
     axios.get( "/submit_client/" + clientName )
     .then( (res) => {
       let responseMessage = '';
       let clientExists;
-      this.setState({loading: false})
+      this.setState({ loading: false })
 
       if (res.data.clientExists) {
         responseMessage = 'Access client ' + clientName + '?';
@@ -63,6 +69,7 @@ class Home extends React.Component {
             className: 'danger',
             action: () => {
               Popup.close();
+              this.setState({handlingSubmit: false})
             }
           }],
           right: [{
@@ -73,17 +80,20 @@ class Home extends React.Component {
                 axios.post( "/create_client", {clientName: clientName} )
                 .then( (res) => {
                   this.props.history.push('/Client/' + clientName + '/' + res.data.clientId);
-                })
+                 })
               } else {
                 this.props.history.push('/Client/' + clientName + '/' + res.data.clientId);
               }
 
               Popup.close();
+              this.setState({handlingSubmit: false})
             }
           }]
         }
-      })
-    })
+       })
+
+     })
+
     event.preventDefault();
   }
 
@@ -99,7 +109,7 @@ class Home extends React.Component {
                 <p>Enter existing ID to view account or enter new ID to create a new account.</p>
                 <form onSubmit={ this.handleSubmit }>
                   <input type="text" name="clientName" required/>
-                  <input type="submit" />
+                  <input disabled={this.state.handlingSubmit} type="submit" />
                 </form>
               </div>
             </div>
